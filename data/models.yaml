@@ -1,0 +1,95 @@
+- name: llama3.2
+  variant: 3b
+  parameters: 3.2
+  use_cases: ["chat", "summarization", "general"]
+  context_window: 131072
+  quant_levels: ["Q4_K_M", "Q5_K_M", "Q8_0"]
+  vram_requirements:
+    Q4_K_M: 2.1
+    Q5_K_M: 2.5
+    Q8_0: 3.8
+  notable_strengths: "Fast, highly efficient, strong reasoning for small size"
+  ollama_pull_command: "ollama run llama3.2:3b"
+  released: "2024-09-25"
+
+- name: llama3.2
+  variant: 1b
+  parameters: 1.2
+  use_cases: ["chat", "summarization", "mobile"]
+  context_window: 131072
+  quant_levels: ["Q4_K_M", "Q5_K_M", "Q8_0"]
+  vram_requirements:
+    Q4_K_M: 0.9
+    Q5_K_M: 1.1
+    Q8_0: 1.6
+  notable_strengths: "Ultra-fast, runs on almost anything"
+  ollama_pull_command: "ollama run llama3.2:1b"
+  released: "2024-09-25"
+
+- name: llama3.1
+  variant: 8b
+  parameters: 8.0
+  use_cases: ["chat", "coding", "general"]
+  context_window: 131072
+  quant_levels: ["Q4_K_M", "Q5_K_M", "Q8_0"]
+  vram_requirements:
+    Q4_K_M: 5.1
+    Q5_K_M: 6.2
+    Q8_0: 9.0
+  notable_strengths: "Very balanced, standard for local chat"
+  ollama_pull_command: "ollama run llama3.1:8b"
+  released: "2024-07-23"
+
+- name: llama3.1
+  variant: 70b
+  parameters: 70.0
+  use_cases: ["reasoning", "complex coding", "agentic"]
+  context_window: 131072
+  quant_levels: ["Q4_K_M", "Q5_K_M"]
+  vram_requirements:
+    Q4_K_M: 40.5
+    Q5_K_M: 49.2
+  notable_strengths: "Elite performance, frontier-class"
+  ollama_pull_command: "ollama run llama3.1:70b"
+  released: "2024-07-23"
+
+- name: mistral
+  variant: 7b
+  parameters: 7.3
+  use_cases: ["chat", "summarization", "rag"]
+  context_window: 32768
+  quant_levels: ["Q4_K_M", "Q5_K_M", "Q8_0"]
+  vram_requirements:
+    Q4_K_M: 4.5
+    Q5_K_M: 5.4
+    Q8_0: 8.1
+  notable_strengths: "Robust, widely supported, great for RAG"
+  ollama_pull_command: "ollama run mistral"
+  released: "2023-09-27"
+
+- name: gemma2
+  variant: 9b
+  parameters: 9.2
+  use_cases: ["chat", "coding", "reasoning"]
+  context_window: 8192
+  quant_levels: ["Q4_K_M", "Q5_K_M", "Q8_0"]
+  vram_requirements:
+    Q4_K_M: 5.8
+    Q5_K_M: 7.0
+    Q8_0: 10.2
+  notable_strengths: "State-of-the-art weights from Google, high intelligence"
+  ollama_pull_command: "ollama run gemma2:9b"
+  released: "2024-06-27"
+
+- name: deepseek-coder-v2
+  variant: 16b
+  parameters: 16.0
+  use_cases: ["coding"]
+  context_window: 128000
+  quant_levels: ["Q4_K_M", "Q5_K_M"]
+  vram_requirements:
+    Q4_K_M: 10.2
+    Q5_K_M: 12.4
+  notable_strengths: "Top-tier coding performance, competitive with GPT-4"
+  ollama_pull_command: "ollama run deepseek-coder-v2:16b"
+  released: "2024-06-17"

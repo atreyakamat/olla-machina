@@ -1,0 +1,17 @@
+{
+  "name": "olla-machina-monorepo",
+  "version": "0.1.0",
+  "description": "Spec-aware model intelligence layer for Ollama",
+  "private": true,
+  "workspaces": [
+    "cli",
+    "shared",
+    "web"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  }
+}

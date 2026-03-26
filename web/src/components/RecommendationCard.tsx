@@ -1,4 +1,5 @@
-import { Recommendation, QUANT_LABELS } from '@shared/engine';
+import { QUANT_LABELS } from '@shared/engine';
+import type { Recommendation } from '@shared/engine';
 
 interface RecommendationCardProps {
   recommendation: Recommendation;

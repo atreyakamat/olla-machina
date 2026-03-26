@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import RecommendationsList from './components/RecommendationsList';
+import ScoringRules from './components/ScoringRules';
+import CloudSearch from './components/CloudSearch';
 import { 
-  Fingerprint, 
   scoreRecommendations, 
   parseModelsFromYAML,
-  QUANT_LABELS,
+  QUANT_LABELS
+} from '@shared/engine';
+import type { 
+  Fingerprint, 
   Model,
   HardwareSpec,
   UseCase
@@ -54,9 +58,10 @@ interface OllamaInfo {
 }
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'form' | 'paste'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'paste' | 'cloud'>('form');
   const [selectedGPU, setSelectedGPU] = useState('rtx-4090');
   const [selectedUseCase, setSelectedUseCase] = useState<UseCase>('chat');
+  const [searchTerm, setSearchTerm] = useState('');
   const [speedQuality, setSpeedQuality] = useState(3);
   const [contextWindow, setContextWindow] = useState(8192);
   const [pasteContent, setPasteContent] = useState('');
@@ -86,6 +91,13 @@ function App() {
     try {
       let fingerprint: Fingerprint;
       
+      const filteredModels = searchTerm 
+        ? models.filter(m => 
+            m.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            m.use_cases.some(u => u.toLowerCase().includes(searchTerm.toLowerCase()))
+          )
+        : models;
+
       if (activeTab === 'paste') {
         const ollamaInfo: OllamaInfo = JSON.parse(pasteContent);
         const gpu = ollamaInfo.gpu?.[0];
@@ -169,7 +181,7 @@ function App() {
         };
       }
       
-      const result = scoreRecommendations(fingerprint, models);
+      const result = scoreRecommendations(fingerprint, filteredModels);
       setRecommendations(result);
     } catch (error) {
       console.error('Failed to get recommendations:', error);
@@ -218,57 +230,74 @@ function App() {
             >
               Paste Ollama Info
             </button>
+            <button 
+              className={`tab ${activeTab === 'cloud' ? 'active' : ''}`}
+              onClick={() => setActiveTab('cloud')}
+            >
+              Cloud Search
+            </button>
           </div>
 
           <div className="form-container">
             {activeTab === 'form' ? (
               <div className="form">
-                <div className="form-group">
-                  <label htmlFor="gpu">Your GPU</label>
-                  <select 
-                    id="gpu" 
-                    value={selectedGPU} 
-                    onChange={(e) => setSelectedGPU(e.target.value)}
-                    className="select"
-                  >
-                    <optgroup label="NVIDIA RTX">
-                      {GPU_OPTIONS.filter(g => g.value.startsWith('rtx')).map(gpu => (
-                        <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="gpu">Your GPU</label>
+                    <select 
+                      id="gpu" 
+                      value={selectedGPU} 
+                      onChange={(e) => setSelectedGPU(e.target.value)}
+                      className="select"
+                    >
+                      <optgroup label="NVIDIA RTX">
+                        {GPU_OPTIONS.filter(g => g.value.startsWith('rtx')).map(gpu => (
+                          <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="NVIDIA Data Center">
+                        {GPU_OPTIONS.filter(g => g.value.startsWith('a')).map(gpu => (
+                          <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Apple Silicon">
+                        {GPU_OPTIONS.filter(g => g.type === 'metal').map(gpu => (
+                          <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="AMD">
+                        {GPU_OPTIONS.filter(g => g.type === 'amd').map(gpu => (
+                          <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="useCase">Primary Use Case</label>
+                    <select 
+                      id="useCase" 
+                      value={selectedUseCase} 
+                      onChange={(e) => setSelectedUseCase(e.target.value as UseCase)}
+                      className="select"
+                    >
+                      {USE_CASE_OPTIONS.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
-                    </optgroup>
-                    <optgroup label="NVIDIA Data Center">
-                      {GPU_OPTIONS.filter(g => g.value.startsWith('a')).map(gpu => (
-                        <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="Apple Silicon">
-                      {GPU_OPTIONS.filter(g => g.type === 'metal').map(gpu => (
-                        <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="AMD">
-                      {GPU_OPTIONS.filter(g => g.type === 'amd').map(gpu => (
-                        <option key={gpu.value} value={gpu.value}>{gpu.label}</option>
-                      ))}
-                    </optgroup>
-                  </select>
-                  <span className="hint">
-                    {GPU_OPTIONS.find(g => g.value === selectedGPU)?.vram}GB VRAM
-                  </span>
+                    </select>
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="useCase">Primary Use Case</label>
-                  <select 
-                    id="useCase" 
-                    value={selectedUseCase} 
-                    onChange={(e) => setSelectedUseCase(e.target.value as UseCase)}
-                    className="select"
-                  >
-                    {USE_CASE_OPTIONS.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
+                <div className="form-group search-group">
+                  <label htmlFor="searchTerm">Search Models or Use Cases (optional)</label>
+                  <input 
+                    type="text" 
+                    id="searchTerm"
+                    placeholder="e.g. llama3, coding, vision, 70b..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="input"
+                  />
                 </div>
 
                 <div className="form-group">
@@ -307,8 +336,16 @@ function App() {
                     <option value={131072}>128K tokens</option>
                   </select>
                 </div>
+                
+                <button 
+                  className="button primary"
+                  onClick={handleGetRecommendations}
+                  disabled={isLoading || models.length === 0}
+                >
+                  {isLoading ? 'Finding Models...' : 'Get Recommendations'}
+                </button>
               </div>
-            ) : (
+            ) : activeTab === 'paste' ? (
               <div className="paste-mode">
                 <div className="paste-instructions">
                   <p>Run this command in your terminal:</p>
@@ -335,26 +372,39 @@ function App() {
                     ))}
                   </select>
                 </div>
+                <button 
+                  className="button primary"
+                  onClick={handleGetRecommendations}
+                  disabled={isLoading || !pasteContent}
+                >
+                  {isLoading ? 'Analyzing...' : 'Analyze Paste'}
+                </button>
               </div>
+            ) : (
+              <CloudSearch />
             )}
-
-            <button 
-              className="button primary"
-              onClick={handleGetRecommendations}
-              disabled={isLoading || models.length === 0}
-            >
-              {isLoading ? 'Finding Models...' : 'Get Recommendations'}
-            </button>
           </div>
         </div>
 
-        {recommendations && (
-          <RecommendationsList 
-            recommendations={recommendations}
-            copiedCommand={copiedCommand}
-            onCopy={copyToClipboard}
-          />
+        {activeTab !== 'cloud' && recommendations && (
+          <>
+            <RecommendationsList 
+              recommendations={recommendations}
+              copiedCommand={copiedCommand}
+              onCopy={copyToClipboard}
+            />
+            {recommendations.recommendations.length === 0 && (
+              <div className="cloud-fallback">
+                <p>No local models found that meet your criteria. Try searching the cloud?</p>
+                <button className="button secondary" onClick={() => setActiveTab('cloud')}>
+                  Explore Cloud Models
+                </button>
+              </div>
+            )}
+          </>
         )}
+
+        <ScoringRules />
       </main>
 
       <footer className="footer">

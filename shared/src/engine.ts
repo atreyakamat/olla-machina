@@ -422,12 +422,16 @@ function formatRecommendation(scored: ScoredCandidate): Recommendation {
 
 function generateReason(model: Model, scored: ScoredCandidate): string {
   const headroomGB = scored.vram_headroom.toFixed(1);
-  const memoryType = model.variant.includes('3b') || model.variant.includes('1b') ? 'Unified Memory' : 'GPU';
+  const isCPU = scored.hybrid_mode || scored.model.variant.includes('cpu');
 
   if (scored.hybrid_mode) {
-    return `${model.name}:${model.variant} at ${QUANT_LABELS[scored.quant]} quality. Hybrid mode enabled - ${scored.speed_penalty.toFixed(0)}% speed reduction.`;
+    if (scored.vram_used === 0 || scored.speed_penalty > 30) {
+      return `CPU-Optimized: ${model.name}:${model.variant} running on System RAM. Expect slower inference (~2-5 tps) but high reliability.`;
+    }
+    return `${model.name}:${model.variant} at ${QUANT_LABELS[scored.quant]} quality. Hybrid mode enabled - ${scored.speed_penalty.toFixed(0)}% speed reduction using System RAM.`;
   }
 
+  const memoryType = scored.vram_used > 0 ? 'GPU VRAM' : 'System RAM';
   return `${model.name}:${model.variant} at ${QUANT_LABELS[scored.quant]} quality. Best fit for ${headroomGB}GB headroom on your ${memoryType}.`;
 }
 

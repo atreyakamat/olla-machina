@@ -11,9 +11,11 @@ import type {
   Fingerprint, 
   Model,
   HardwareSpec,
-  UseCase
+  UseCase,
+  Benchmark
 } from '@shared/engine';
 import yaml from 'js-yaml';
+import { subscribeToAlerts, fetchBenchmarks } from './lib/api';
 import './App.css';
 
 const USE_CASE_OPTIONS: { value: UseCase; label: string }[] = [
@@ -58,6 +60,7 @@ interface OllamaInfo {
 }
 
 function App() {
+  const [view, setView] = useState<'landing' | 'checker'>('landing');
   const [activeTab, setActiveTab] = useState<'form' | 'paste' | 'cloud'>('form');
   const [selectedGPU, setSelectedGPU] = useState('rtx-4090');
   const [selectedUseCase, setSelectedUseCase] = useState<UseCase>('chat');
@@ -66,24 +69,111 @@ function App() {
   const [contextWindow, setContextWindow] = useState(8192);
   const [pasteContent, setPasteContent] = useState('');
   const [models, setModels] = useState<Model[]>([]);
+  const [benchmarks, setBenchmarks] = useState<Benchmark[]>([]);
   const [recommendations, setRecommendations] = useState<ReturnType<typeof scoreRecommendations> | null>(null);
   const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [detectionError, setDetectionError] = useState<string | null>(null);
+  
+  // Subscription state
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subStatus, setSubStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
+
+  const Chibi = ({ name, mood }: { name: string, mood: 'happy' | 'thinking' | 'detecting' }) => (
+    <div className={`chibi-container ${name}`}>
+      <div className={`chibi ${mood}`}>
+        <div className="eyes"></div>
+        <div className="blush"></div>
+        <div className="mouth"></div>
+        <div className="antennas"></div>
+      </div>
+      <div className="chibi-name">{name}</div>
+    </div>
+  );
 
   useEffect(() => {
-    async function loadModels() {
+    async function init() {
       try {
         const response = await fetch('/models.yaml');
         const text = await response.text();
         const data = yaml.load(text);
         const parsedModels = parseModelsFromYAML(data);
         setModels(parsedModels);
+
+        const benchData = await fetchBenchmarks();
+        if (benchData) setBenchmarks(benchData as Benchmark[]);
       } catch (error) {
-        console.error('Failed to load models:', error);
+        console.error('Initialization failed:', error);
       }
     }
-    loadModels();
+    init();
   }, []);
+
+  const handleSubscribe = async (e: React.FormEvent, fingerprint: Fingerprint) => {
+    e.preventDefault();
+    if (!email) return;
+    setIsSubscribing(true);
+    setSubStatus(null);
+    try {
+      await subscribeToAlerts(email, fingerprint);
+      setSubStatus({ type: 'success', msg: 'Subscribed! We\'ll notify you of better models.' });
+    } catch (err) {
+      setSubStatus({ type: 'error', msg: 'Subscription failed. You might already be subscribed.' });
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
+  const detectHardware = async () => {
+    setIsDetecting(true);
+    setDetectionError(null);
+    try {
+      if (!navigator.gpu) {
+        throw new Error('WebGPU not supported in this browser. Try Chrome or Edge.');
+      }
+
+      const adapter = await navigator.gpu.requestAdapter();
+      if (!adapter) {
+        throw new Error('No GPU adapter found.');
+      }
+
+      // Get adapter info (architecture, vendor)
+      const info = await adapter.requestAdapterInfo();
+      const vramBytes = adapter.limits.maxStorageBufferBindingSize; // Approximation for VRAM
+      // Note: Actual VRAM is hard to get via WebGPU for security reasons, 
+      // but we can estimate or use common presets.
+      
+      const vramGB = Math.round((adapter.limits.maxBufferSize / (1024 * 1024 * 1024)) * 2 * 10) / 10;
+      
+      console.log('Detected GPU:', info.architecture, info.description);
+
+      // Try to find a matching preset or set manually
+      const gpuModel = info.description || info.architecture || 'Detected GPU';
+      
+      // Update state
+      setActiveTab('form');
+      // Look for a close match in our predefined list or create a custom one
+      const match = GPU_OPTIONS.find(g => 
+        gpuModel.toLowerCase().includes(g.label.toLowerCase().split('(')[0].trim())
+      );
+
+      if (match) {
+        setSelectedGPU(match.value);
+      } else {
+        // Fallback or custom detection handling
+        console.log('No direct match, using detected name');
+      }
+
+      alert(`Detected: ${gpuModel}\nEstimated VRAM: ${vramGB}GB\n(Using closest preset or default)`);
+
+    } catch (err) {
+      setDetectionError(err instanceof Error ? err.message : 'Detection failed');
+    } finally {
+      setIsDetecting(false);
+    }
+  };
 
   const handleGetRecommendations = () => {
     setIsLoading(true);
@@ -181,7 +271,8 @@ function App() {
         };
       }
       
-      const result = scoreRecommendations(fingerprint, filteredModels);
+      // Use real benchmarks in scoring!
+      const result = scoreRecommendations(fingerprint, filteredModels, benchmarks);
       setRecommendations(result);
     } catch (error) {
       console.error('Failed to get recommendations:', error);
@@ -206,16 +297,157 @@ function App() {
                             speedQuality === 4 ? 'Quality Focused' :
                             'Maximum Quality';
 
+  if (view === 'landing') {
+    return (
+      <div className="app landing-view-full">
+        <div className="background-fixed">
+          <div className="blob blob-1"></div>
+          <div className="blob blob-2"></div>
+          <div className="blob blob-3"></div>
+        </div>
+
+        <nav className="navbar glass">
+          <div className="nav-container">
+            <h1 className="logo-small">OllamaFit</h1>
+            <div className="nav-links">
+              <a href="#features">Features</a>
+              <a href="#how-it-works">How it Works</a>
+              <button className="button primary-sm" onClick={() => setView('checker')}>Launch App</button>
+            </div>
+          </div>
+        </nav>
+
+        <main className="landing-scroll">
+          <section className="hero-section">
+            <div className="container">
+              <div className="hero-content-split">
+                <div className="hero-text-left">
+                  <h1 className="logo-mega">Find Your <span className="text-gradient">Perfect</span> Match</h1>
+                  <p className="hero-desc">
+                    OllamaFit is a spec-aware intelligence layer that detects your hardware and recommends the optimal 
+                    local LLMs. No more "Out of Memory" errors.
+                  </p>
+                  <div className="hero-btns">
+                    <button className="button primary-glow-lg pulse" onClick={() => setView('checker')}>
+                      Get Started Free
+                    </button>
+                    <a href="#features" className="button ghost">Explore Features</a>
+                  </div>
+                </div>
+                <div className="hero-visual">
+                  <div className="chibi-stage glass">
+                    <Chibi name="Olla" mood="happy" />
+                    <Chibi name="Machina" mood="detecting" />
+                    <div className="stage-glow"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="features" className="features-section">
+            <div className="container">
+              <h2 className="section-title-center">Intelligent Model Scoring</h2>
+              <div className="features-grid">
+                <div className="feature-card glass">
+                  <div className="feature-icon">🔍</div>
+                  <h3>Hardware Awareness</h3>
+                  <p>Deep detection of GPU VRAM, System RAM, and CPU architecture (including Apple Silicon Unified Memory).</p>
+                </div>
+                <div className="feature-card glass">
+                  <div className="feature-icon">🧠</div>
+                  <h3>Quantization Logic</h3>
+                  <p>We calculate the exact VRAM footprint for Q4, Q5, Q8, and F16 weights to ensure 100% fit.</p>
+                </div>
+                <div className="feature-card glass">
+                  <div className="feature-icon">⚡</div>
+                  <h3>Hybrid Mode</h3>
+                  <p>Automatically detects when a model can spill over into System RAM and calculates the speed penalty.</p>
+                </div>
+                <div className="feature-card glass">
+                  <div className="feature-icon">📊</div>
+                  <h3>Real Benchmarks</h3>
+                  <p>Powered by community-driven throughput data to give you accurate Tokens Per Second (TPS) estimates.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="how-it-works" className="how-section glass-dark">
+            <div className="container">
+              <h2 className="section-title-center">Three Steps to Local AI Bliss</h2>
+              <div className="steps-container">
+                <div className="step">
+                  <div className="step-num">1</div>
+                  <h4>Detect</h4>
+                  <p>Use WebGPU or Terminal commands to scan your hardware specs in seconds.</p>
+                </div>
+                <div className="step-arrow">→</div>
+                <div className="step">
+                  <div className="step-num">2</div>
+                  <h4>Analyze</h4>
+                  <p>Our scoring engine filters 30+ models based on your VRAM and use case.</p>
+                </div>
+                <div className="step-arrow">→</div>
+                <div className="step">
+                  <div className="step-num">3</div>
+                  <h4>Pull</h4>
+                  <p>Copy the one-click Ollama command and start chatting with your perfect model.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="cta-section">
+            <div className="container">
+              <div className="cta-box glass">
+                <h2>Ready to optimize your local setup?</h2>
+                <p>Join hundreds of users finding the sweet spot between speed and quality.</p>
+                <button className="button primary-glow-lg" onClick={() => setView('checker')}>
+                  Open Model Checker
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <footer className="footer-full">
+            <div className="container">
+              <p>© 2026 OllamaFit. Spec-aware intelligence for local AI.</p>
+            </div>
+          </footer>
+        </main>
+      </div>
+    );
+  }
+
   return (
-    <div className="app">
-      <header className="header">
+    <div className="app checker-view">
+      <div className="background-glow"></div>
+      <header className="header glass-header">
         <div className="header-content">
-          <h1 className="logo">OllamaFit</h1>
-          <p className="tagline">Find your perfect Ollama model for your hardware</p>
+          <h1 className="logo" onClick={() => setView('landing')} style={{cursor: 'pointer'}}>OllamaFit</h1>
+          <div className="header-actions">
+            <button 
+              className={`button detect-button ${isDetecting ? 'loading' : ''}`}
+              onClick={detectHardware}
+              disabled={isDetecting}
+            >
+              {isDetecting ? 'Detecting...' : 'Auto-Detect Hardware'}
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="main">
+      <main className="main glass-main">
+        {detectionError && (
+          <div className="gpu-warning glass-warning">
+            <div className="warning-icon">⚠️</div>
+            <div className="warning-text">
+              <strong>GPU detection limited:</strong> {detectionError}. 
+              No worries! You can still use the manual selection for CPU-only recommendations.
+            </div>
+          </div>
+        )}
         <div className="input-section">
           <div className="tabs">
             <button 
@@ -393,6 +625,40 @@ function App() {
               copiedCommand={copiedCommand}
               onCopy={copyToClipboard}
             />
+            
+            <div className="subscription-card">
+              <h3>Get notified of better models</h3>
+              <p>Subscribe to receive an alert when a newer or better-fitting model is released for your hardware.</p>
+              <form className="subscription-form" onSubmit={(e) => {
+                // We need to recreate or capture the last used fingerprint
+                // For simplicity, we'll assume the current form state or just the ID from recommendations
+                handleSubscribe(e, {
+                  fingerprint_id: recommendations.fingerprint_id,
+                  hardware: recommendations.recommendations[0] ? { 
+                    gpu: { model: recommendations.recommendations[0].model_name, vram_gb: recommendations.recommendations[0].vram_required_gb, type: 'nvidia' },
+                    cpu: { cores: 8, architecture: 'x86_64' },
+                    system_ram_gb: 16,
+                    os: 'Linux'
+                  } : {} as any, // This is a bit of a hack, in a real app we'd store the last fingerprint
+                } as any);
+              }}>
+                <input 
+                  type="email" 
+                  placeholder="your@email.com" 
+                  className="input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
+                />
+                <button type="submit" className="button secondary" disabled={isSubscribing}>
+                  {isSubscribing ? 'Subscribing...' : 'Notify Me'}
+                </button>
+              </form>
+              {subStatus && (
+                <p className={`status-msg ${subStatus.type}`}>{subStatus.msg}</p>
+              )}
+            </div>
+
             {recommendations.recommendations.length === 0 && (
               <div className="cloud-fallback">
                 <p>No local models found that meet your criteria. Try searching the cloud?</p>

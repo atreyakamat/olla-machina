@@ -13,6 +13,7 @@ export interface Model {
   context_window: number;
   quant_levels: QuantLevel[];
   vram_requirements: Record<string, number>;
+  storage_required_gb?: number;
   notable_strengths: string;
   ollama_pull_command: string;
   released: string;
@@ -58,6 +59,7 @@ export interface HardwareSpec {
   gpu: GPUSpec;
   cpu: CPUSpec;
   system_ram_gb: number;
+  storage_gb?: number;
   os: OS;
   unified_memory_gb?: number;
 }
@@ -271,6 +273,7 @@ export function scoreRecommendations(
   let filtered_by_vram = 0;
 
   const available_memory = getAvailableMemory(fingerprint.hardware);
+  const available_storage = fingerprint.hardware.storage_gb || 1000;
   const quant_order: QuantLevel[] = ['Q4_K_M', 'Q5_K_M', 'Q8_0', 'F16'];
 
   for (const model of models) {
@@ -286,6 +289,11 @@ export function scoreRecommendations(
     const context_ok = model.context_window >= (fingerprint.use_case.context_window_min || 2048);
     if (!context_ok) {
       filtered_by_use_case++;
+      continue;
+    }
+
+    if (model.storage_required_gb && model.storage_required_gb > available_storage) {
+      filtered_by_vram++;
       continue;
     }
 

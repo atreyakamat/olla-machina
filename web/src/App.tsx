@@ -147,6 +147,19 @@ function App() {
       
       const vramGB = Math.round((adapter.limits.maxBufferSize / (1024 * 1024 * 1024)) * 2 * 10) / 10;
       
+      // Attempt to estimate storage (limited in browser)
+      let storageGB = 512;
+      try {
+        if ('storage' in navigator && 'estimate' in navigator.storage) {
+          const estimate = await navigator.storage.estimate();
+          if (estimate.quota) {
+            storageGB = Math.round(estimate.quota / (1024 * 1024 * 1024));
+          }
+        }
+      } catch (e) {
+        console.warn('Storage estimation failed');
+      }
+
       console.log('Detected GPU:', info.architecture, info.description);
 
       // Try to find a matching preset or set manually
@@ -161,12 +174,9 @@ function App() {
 
       if (match) {
         setSelectedGPU(match.value);
-      } else {
-        // Fallback or custom detection handling
-        console.log('No direct match, using detected name');
       }
 
-      alert(`Detected: ${gpuModel}\nEstimated VRAM: ${vramGB}GB\n(Using closest preset or default)`);
+      alert(`Detected: ${gpuModel}\nEstimated VRAM: ${vramGB}GB\nStorage Available: ~${storageGB}GB`);
 
     } catch (err) {
       setDetectionError(err instanceof Error ? err.message : 'Detection failed');
@@ -196,27 +206,19 @@ function App() {
           : 8;
         const gpuModel = gpu?.name || 'Unknown GPU';
         
-        const isMetal = navigator.platform.toLowerCase().includes('mac') || 
-                       gpuModel.toLowerCase().includes('apple') ||
-                       gpuModel.toLowerCase().includes('m1') ||
-                       gpuModel.toLowerCase().includes('m2') ||
-                       gpuModel.toLowerCase().includes('m3') ||
-                       gpuModel.toLowerCase().includes('m4');
-        
         const hardware: HardwareSpec = {
           gpu: {
-            type: isMetal ? 'metal' : 'nvidia',
+            type: gpuModel.toLowerCase().includes('nvidia') ? 'nvidia' : 'cpu',
             model: gpuModel,
             vram_gb: vramGB,
           },
           cpu: {
             cores: navigator.hardwareConcurrency || 8,
-            architecture: navigator.platform.includes('ARM') || navigator.platform.includes('Mac') ? 'arm64' : 'x86_64',
+            architecture: 'x86_64',
           },
           system_ram_gb: 16,
-          os: navigator.platform.includes('Mac') ? 'macOS' : 
-              navigator.platform.includes('Win') ? 'Windows' : 'Linux',
-          unified_memory_gb: isMetal ? vramGB : undefined,
+          storage_gb: 512,
+          os: 'Linux',
         };
         
         fingerprint = {
@@ -250,6 +252,7 @@ function App() {
             architecture: 'x86_64',
           },
           system_ram_gb: 32,
+          storage_gb: 1000,
           os: 'Linux',
           unified_memory_gb: gpuType === 'metal' ? vramGB : undefined,
         };

@@ -1329,3 +1329,59 @@ body {
   margin-bottom: 24px;
   display: flex; gap: 16px; align-items: center;
 }
+
+/* --- ENHANCED RECOMMENDATION CARDS --- */
+
+.glass-card {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--color-primary);
+  transform: scale(1.02);
+  background: rgba(30, 41, 59, 0.6);
+}
+
+.model-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.spec-icon-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+
+.spec-icon-label svg {
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+.spec-value {
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.card.hero .model-name {
+  font-size: 1.5rem;
+  background: linear-gradient(to right, #fff, var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+}

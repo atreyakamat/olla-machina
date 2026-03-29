@@ -15,6 +15,7 @@ models:
         Q4_K_M: 2.1
         Q5_K_M: 2.5
         Q8_0: 3.8
+      storage_required_gb: 4.2
       notable_strengths: "Fast, highly efficient, strong reasoning for small size"
       ollama_pull_command: "ollama run llama3.2:3b"
       huggingface_url: "https://huggingface.co/meta-llama/Llama-3.2-3B"
@@ -31,6 +32,7 @@ models:
         Q4_K_M: 0.9
         Q5_K_M: 1.1
         Q8_0: 1.6
+      storage_required_gb: 1.8
       notable_strengths: "Ultra-fast, runs on almost anything"
       ollama_pull_command: "ollama run llama3.2:1b"
       huggingface_url: "https://huggingface.co/meta-llama/Llama-3.2-1B"
@@ -48,6 +50,7 @@ models:
         Q4_K_M: 5.1
         Q5_K_M: 6.2
         Q8_0: 9.0
+      storage_required_gb: 9.9
       notable_strengths: "Very balanced, standard for local chat"
       ollama_pull_command: "ollama run llama3.1:8b"
       huggingface_url: "https://huggingface.co/meta-llama/Llama-3.1-8B"
@@ -63,6 +66,7 @@ models:
       vram_requirements:
         Q4_K_M: 40.5
         Q5_K_M: 49.2
+      storage_required_gb: 54.1
       notable_strengths: "Elite performance, frontier-class reasoning"
       ollama_pull_command: "ollama run llama3.1:70b"
       huggingface_url: "https://huggingface.co/meta-llama/Llama-3.1-70B"
@@ -80,6 +84,7 @@ models:
         Q4_K_M: 4.5
         Q5_K_M: 5.4
         Q8_0: 8.1
+      storage_required_gb: 8.9
       notable_strengths: "Robust, widely supported, great for RAG"
       ollama_pull_command: "ollama run mistral"
       huggingface_url: "https://huggingface.co/mistralai/Mistral-7B-v0.3"
@@ -97,6 +102,7 @@ models:
         Q4_K_M: 5.8
         Q5_K_M: 7.0
         Q8_0: 10.2
+      storage_required_gb: 11.2
       notable_strengths: "State-of-the-art weights from Google, high intelligence"
       ollama_pull_command: "ollama run gemma2:9b"
       huggingface_url: "https://huggingface.co/google/gemma-2-9b"
@@ -112,6 +118,7 @@ models:
       vram_requirements:
         Q4_K_M: 16.2
         Q5_K_M: 19.6
+      storage_required_gb: 21.6
       notable_strengths: "Exceptional reasoning capabilities, Google quality"
       ollama_pull_command: "ollama run gemma2:27b"
       huggingface_url: "https://huggingface.co/google/gemma-2-27b"
@@ -128,6 +135,7 @@ models:
       vram_requirements:
         Q4_K_M: 10.2
         Q5_K_M: 12.4
+      storage_required_gb: 13.6
       notable_strengths: "Top-tier coding performance, competitive with GPT-4"
       ollama_pull_command: "ollama run deepseek-coder-v2:16b"
       huggingface_url: "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2"
@@ -144,6 +152,7 @@ models:
         Q4_K_M: 4.5
         Q5_K_M: 5.5
         Q8_0: 8.0
+      storage_required_gb: 8.8
       notable_strengths: "Fast coding assistant, lower resource requirements"
       ollama_pull_command: "ollama run deepseek-coder-v2:lite"
       huggingface_url: "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Lite"
@@ -161,6 +170,7 @@ models:
         Q4_K_M: 8.8
         Q5_K_M: 10.7
         Q8_0: 15.5
+      storage_required_gb: 17.1
       notable_strengths: "Excellent multilingual support, strong reasoning"
       ollama_pull_command: "ollama run qwen2.5:14b"
       huggingface_url: "https://huggingface.co/Qwen/Qwen2.5-14B"
@@ -176,6 +186,7 @@ models:
       vram_requirements:
         Q4_K_M: 19.5
         Q5_K_M: 23.7
+      storage_required_gb: 26.1
       notable_strengths: "High intelligence, excellent Chinese language support"
       ollama_pull_command: "ollama run qwen2.5:32b"
       huggingface_url: "https://huggingface.co/Qwen/Qwen2.5-32B"
@@ -191,6 +202,7 @@ models:
       vram_requirements:
         Q4_K_M: 41.8
         Q5_K_M: 50.8
+      storage_required_gb: 55.9
       notable_strengths: "Frontier-class performance, best-in-class multilingual"
       ollama_pull_command: "ollama run qwen2.5:72b"
       huggingface_url: "https://huggingface.co/Qwen/Qwen2.5-72B"
@@ -208,6 +220,7 @@ models:
         Q4_K_M: 8.8
         Q5_K_M: 10.7
         Q8_0: 15.5
+      storage_required_gb: 17.1
       notable_strengths: "Microsoft's best small model, excellent instruction following"
       ollama_pull_command: "ollama run phi4:14b"
       huggingface_url: "https://huggingface.co/microsoft/phi-4"
@@ -225,6 +238,7 @@ models:
         Q4_K_M: 4.5
         Q5_K_M: 5.5
         Q8_0: 8.0
+      storage_required_gb: 8.8
       notable_strengths: "Excellent RAG capabilities, built-in tool use"
       ollama_pull_command: "ollama run command-r7b"
       huggingface_url: "https://huggingface.co/CohereForAI/c4ai-command-r7b-12-2024"
@@ -241,6 +255,7 @@ models:
       vram_requirements:
         Q4_K_M: 40.5
         Q5_K_M: 49.2
+      storage_required_gb: 54.1
       notable_strengths: "NVIDIA optimized, excellent for enterprise use"
       ollama_pull_command: "ollama run nemotron:70b"
       huggingface_url: "https://huggingface.co/nvidia/Nemotron-70B-Help-Steer"
@@ -257,6 +272,7 @@ models:
       vram_requirements:
         Q4_K_M: 40.5
         Q5_K_M: 49.2
+      storage_required_gb: 54.1
       notable_strengths: "Excellent personality and instruction following"
       ollama_pull_command: "ollama run hermes-3:70b"
       huggingface_url: "https://huggingface.co/NousResearch/Hermes-3-Llama-3.1-70B"
@@ -272,6 +288,7 @@ models:
       quant_levels: ["Q4_K_M"]
       vram_requirements:
         Q4_K_M: 82.0
+      storage_required_gb: 90.2
       notable_strengths: "Mixture of experts, exceptional reasoning"
       ollama_pull_command: "ollama run wizardlm2:8x22b"
       huggingface_url: "https://huggingface.co/WizardLM/WizardLM-2-8x22B"
@@ -288,6 +305,7 @@ models:
         Q4_K_M: 4.5
         Q5_K_M: 5.5
         Q8_0: 8.0
+      storage_required_gb: 8.8
       notable_strengths: "High quality instruction following"
       ollama_pull_command: "ollama run wizardlm2:7b"
       huggingface_url: "https://huggingface.co/WizardLM/WizardLM-2-7B"
@@ -304,6 +322,7 @@ models:
       vram_requirements:
         Q4_K_M: 20.7
         Q5_K_M: 25.2
+      storage_required_gb: 27.7
       notable_strengths: "Meta's code expert, excellent code generation"
       ollama_pull_command: "ollama run codellama:34b"
       huggingface_url: "https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf"
@@ -320,6 +339,7 @@ models:
         Q4_K_M: 8.2
         Q5_K_M: 10.0
         Q8_0: 14.5
+      storage_required_gb: 16.0
       notable_strengths: "Balanced code assistant for most GPUs"
       ollama_pull_command: "ollama run codellama:13b"
       huggingface_url: "https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf"
@@ -336,6 +356,7 @@ models:
       vram_requirements:
         Q4_K_M: 9.5
         Q5_K_M: 11.5
+      storage_required_gb: 12.7
       notable_strengths: "Hugging Face's code model, excellent fill-in-middle"
       ollama_pull_command: "ollama run starcoder2:15b"
       huggingface_url: "https://huggingface.co/bigcode/starcoder2-15b"
@@ -353,6 +374,7 @@ models:
         Q4_K_M: 1.2
         Q5_K_M: 1.5
         Q8_0: 2.2
+      storage_required_gb: 2.4
       notable_strengths: "Ultra compact, great for embedded devices"
       ollama_pull_command: "ollama run smollm2:1.7b"
       huggingface_url: "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B"
@@ -369,6 +391,7 @@ models:
         Q4_K_M: 0.35
         Q5_K_M: 0.45
         Q8_0: 0.65
+      storage_required_gb: 0.7
       notable_strengths: "Extremely lightweight, runs anywhere"
       ollama_pull_command: "ollama run smollm2:360m"
       huggingface_url: "https://huggingface.co/HuggingFaceTB/SmolLM2-360M"
@@ -386,6 +409,7 @@ models:
         Q4_K_M: 5.5
         Q5_K_M: 6.7
         Q8_0: 9.7
+      storage_required_gb: 10.7
       notable_strengths: "Excellent vision understanding, image analysis"
       ollama_pull_command: "ollama run llava:1.6-mistral"
       huggingface_url: "https://huggingface.co/cjpais/llava-1.6-mistral-7b"
@@ -401,6 +425,7 @@ models:
       vram_requirements:
         Q4_K_M: 9.5
         Q5_K_M: 11.5
+      storage_required_gb: 12.7
       notable_strengths: "High quality vision, larger model for complex images"
       ollama_pull_command: "ollama run llava:1.5-13b"
       huggingface_url: "https://huggingface.co/llava-v1.5-13b"
@@ -418,6 +443,7 @@ models:
         Q4_K_M: 1.3
         Q5_K_M: 1.6
         Q8_0: 2.3
+      storage_required_gb: 2.5
       notable_strengths: "Fast vision model, great for quick image analysis"
       ollama_pull_command: "ollama run moondream"
       huggingface_url: "https://huggingface.co/vikhyat/moondream2"
@@ -434,6 +460,7 @@ models:
       vram_requirements:
         Q4_K_M: 20.7
         Q5_K_M: 25.2
+      storage_required_gb: 27.7
       notable_strengths: "IBM's enterprise model, excellent for business use"
       ollama_pull_command: "ollama run granite3.1:34b"
       huggingface_url: "https://huggingface.co/ibm-granite/granite-3.1-8b"
@@ -451,6 +478,7 @@ models:
         Q4_K_M: 5.5
         Q5_K_M: 6.7
         Q8_0: 9.7
+      storage_required_gb: 10.7
       notable_strengths: "Qwen's vision model, excellent video understanding"
       ollama_pull_command: "ollama run qwen2-vl:7b"
       huggingface_url: "https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct"
@@ -468,6 +496,7 @@ models:
         Q4_K_M: 0.25
         Q5_K_M: 0.35
         Q8_0: 0.55
+      storage_required_gb: 0.6
       notable_strengths: "High quality embeddings, open source, reproducible"
       ollama_pull_command: "ollama pull nomic-embed-text"
       huggingface_url: "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5"
@@ -485,6 +514,7 @@ models:
         Q4_K_M: 0.2
         Q5_K_M: 0.28
         Q8_0: 0.45
+      storage_required_gb: 0.5
       notable_strengths: "Classic embedding model, excellent for classification"
       ollama_pull_command: "ollama pull bert-base"
       huggingface_url: "https://huggingface.co/bert-base-uncased"
@@ -502,6 +532,7 @@ models:
         Q4_K_M: 0.15
         Q5_K_M: 0.22
         Q8_0: 0.38
+      storage_required_gb: 0.4
       notable_strengths: "OpenAI's speech recognition, multilingual support"
       ollama_pull_command: "ollama pull whisper:base"
       huggingface_url: "https://huggingface.co/openai/whisper-base"
@@ -518,6 +549,7 @@ models:
       vram_requirements:
         Q4_K_M: 8.5
         Q5_K_M: 10.3
+      storage_required_gb: 11.3
       notable_strengths: "Meta's vision model, excellent multimodal reasoning"
       ollama_pull_command: "ollama run llama3.2:11b-vision"
       huggingface_url: "https://huggingface.co/meta-llama/Llama-3.2-11B-Vision"
@@ -534,6 +566,7 @@ models:
       vram_requirements:
         Q4_K_M: 26.0
         Q5_K_M: 31.6
+      storage_required_gb: 34.8
       notable_strengths: "Mixture of experts, excellent quality-speed balance"
       ollama_pull_command: "ollama run mixtral"
       huggingface_url: "https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1"

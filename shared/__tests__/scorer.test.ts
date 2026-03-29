@@ -123,4 +123,20 @@ describe('scoreRecommendations', () => {
     expect(result.reasoning).toHaveProperty('filtered_by_vram');
     expect(result.reasoning).toHaveProperty('final_candidates');
   });
+
+  it('filters by storage availability', () => {
+    const lowStorageFP: Fingerprint = {
+      ...mockFingerprint,
+      hardware: { ...mockFingerprint.hardware, storage_gb: 2 }
+    };
+    const storageHeavyModels: Model[] = [
+      {
+        ...mockModels[0],
+        storage_required_gb: 10
+      }
+    ];
+    
+    const result = scoreRecommendations(lowStorageFP, storageHeavyModels);
+    expect(result.recommendations).toHaveLength(0);
+  });
 });

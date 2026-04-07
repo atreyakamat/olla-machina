@@ -3,18 +3,12 @@
   "version": "0.1.0",
   "description": "Spec-aware model intelligence layer for Ollama",
   "private": true,
-  "workspaces": [
-    "cli",
-    "shared",
-    "web",
-    "api"
-  ],
   "scripts": {
-    "dev": "npm run dev --workspaces --if-present",
-    "dev:api": "npm run dev --workspace=api",
-    "dev:web": "npm run dev --workspace=web",
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "install:all": "npm install && npm install --prefix shared && npm install --prefix cli && npm install --prefix web && npm install --prefix api",
+    "dev:api": "npm run dev --prefix api",
+    "dev:web": "npm run dev --prefix web",
+    "build": "npm run build --prefix shared && npm run build --prefix cli && npm run build --prefix web",
+    "test": "npm run test --prefix shared && npm run test --prefix cli && npm run test --prefix web",
+    "lint": "npm run lint --prefix web"
   }
 }

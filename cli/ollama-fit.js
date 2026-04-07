@@ -1,18 +1,12 @@
-#!/usr/bin/env tsx
 #!/usr/bin/env node
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
-}) : x)(function(x) {
-  if (typeof require !== "undefined") return require.apply(this, arguments);
-  throw Error('Dynamic require of "' + x + '" is not supported');
-});
-var __commonJS = (cb, mod) => function __require2() {
+var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
 var __copyProps = (to, from, except, desc) => {
@@ -34,7 +28,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // node_modules/commander/lib/error.js
 var require_error = __commonJS({
-  "node_modules/commander/lib/error.js"(exports) {
+  "node_modules/commander/lib/error.js"(exports2) {
     var CommanderError2 = class extends Error {
       /**
        * Constructs the CommanderError class
@@ -62,14 +56,14 @@ var require_error = __commonJS({
         this.name = this.constructor.name;
       }
     };
-    exports.CommanderError = CommanderError2;
-    exports.InvalidArgumentError = InvalidArgumentError2;
+    exports2.CommanderError = CommanderError2;
+    exports2.InvalidArgumentError = InvalidArgumentError2;
   }
 });
 
 // node_modules/commander/lib/argument.js
 var require_argument = __commonJS({
-  "node_modules/commander/lib/argument.js"(exports) {
+  "node_modules/commander/lib/argument.js"(exports2) {
     var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
     var Argument2 = class {
       /**
@@ -190,14 +184,14 @@ var require_argument = __commonJS({
       const nameOutput = arg.name() + (arg.variadic === true ? "..." : "");
       return arg.required ? "<" + nameOutput + ">" : "[" + nameOutput + "]";
     }
-    exports.Argument = Argument2;
-    exports.humanReadableArgName = humanReadableArgName;
+    exports2.Argument = Argument2;
+    exports2.humanReadableArgName = humanReadableArgName;
   }
 });
 
 // node_modules/commander/lib/help.js
 var require_help = __commonJS({
-  "node_modules/commander/lib/help.js"(exports) {
+  "node_modules/commander/lib/help.js"(exports2) {
     var { humanReadableArgName } = require_argument();
     var Help2 = class {
       constructor() {
@@ -792,14 +786,14 @@ ${itemIndentStr}`);
       const sgrPattern = /\x1b\[\d*(;\d*)*m/g;
       return str2.replace(sgrPattern, "");
     }
-    exports.Help = Help2;
-    exports.stripColor = stripColor;
+    exports2.Help = Help2;
+    exports2.stripColor = stripColor;
   }
 });
 
 // node_modules/commander/lib/option.js
 var require_option = __commonJS({
-  "node_modules/commander/lib/option.js"(exports) {
+  "node_modules/commander/lib/option.js"(exports2) {
     var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
     var Option2 = class {
       /**
@@ -1105,14 +1099,14 @@ var require_option = __commonJS({
         );
       return { shortFlag, longFlag };
     }
-    exports.Option = Option2;
-    exports.DualOptions = DualOptions;
+    exports2.Option = Option2;
+    exports2.DualOptions = DualOptions;
   }
 });
 
 // node_modules/commander/lib/suggestSimilar.js
 var require_suggestSimilar = __commonJS({
-  "node_modules/commander/lib/suggestSimilar.js"(exports) {
+  "node_modules/commander/lib/suggestSimilar.js"(exports2) {
     var maxDistance = 3;
     function editDistance(a, b) {
       if (Math.abs(a.length - b.length) > maxDistance)
@@ -1186,18 +1180,18 @@ var require_suggestSimilar = __commonJS({
       }
       return "";
     }
-    exports.suggestSimilar = suggestSimilar;
+    exports2.suggestSimilar = suggestSimilar;
   }
 });
 
 // node_modules/commander/lib/command.js
 var require_command = __commonJS({
-  "node_modules/commander/lib/command.js"(exports) {
-    var EventEmitter = __require("node:events").EventEmitter;
-    var childProcess = __require("node:child_process");
-    var path2 = __require("node:path");
-    var fs2 = __require("node:fs");
-    var process2 = __require("node:process");
+  "node_modules/commander/lib/command.js"(exports2) {
+    var EventEmitter = require("node:events").EventEmitter;
+    var childProcess = require("node:child_process");
+    var path2 = require("node:path");
+    var fs2 = require("node:fs");
+    var process2 = require("node:process");
     var { Argument: Argument2, humanReadableArgName } = require_argument();
     var { CommanderError: CommanderError2 } = require_error();
     var { Help: Help2, stripColor } = require_help();
@@ -3431,38 +3425,38 @@ Expecting one of '${allowedValues.join("', '")}'`);
         return true;
       return void 0;
     }
-    exports.Command = Command2;
-    exports.useColor = useColor;
+    exports2.Command = Command2;
+    exports2.useColor = useColor;
   }
 });
 
 // node_modules/commander/index.js
 var require_commander = __commonJS({
-  "node_modules/commander/index.js"(exports) {
+  "node_modules/commander/index.js"(exports2) {
     var { Argument: Argument2 } = require_argument();
     var { Command: Command2 } = require_command();
     var { CommanderError: CommanderError2, InvalidArgumentError: InvalidArgumentError2 } = require_error();
     var { Help: Help2 } = require_help();
     var { Option: Option2 } = require_option();
-    exports.program = new Command2();
-    exports.createCommand = (name) => new Command2(name);
-    exports.createOption = (flags, description) => new Option2(flags, description);
-    exports.createArgument = (name, description) => new Argument2(name, description);
-    exports.Command = Command2;
-    exports.Option = Option2;
-    exports.Argument = Argument2;
-    exports.Help = Help2;
-    exports.CommanderError = CommanderError2;
-    exports.InvalidArgumentError = InvalidArgumentError2;
-    exports.InvalidOptionArgumentError = InvalidArgumentError2;
+    exports2.program = new Command2();
+    exports2.createCommand = (name) => new Command2(name);
+    exports2.createOption = (flags, description) => new Option2(flags, description);
+    exports2.createArgument = (name, description) => new Argument2(name, description);
+    exports2.Command = Command2;
+    exports2.Option = Option2;
+    exports2.Argument = Argument2;
+    exports2.Help = Help2;
+    exports2.CommanderError = CommanderError2;
+    exports2.InvalidArgumentError = InvalidArgumentError2;
+    exports2.InvalidOptionArgumentError = InvalidArgumentError2;
   }
 });
 
 // cli/index.ts
-import os from "os";
-import { execSync, spawnSync } from "child_process";
-import fs from "fs";
-import path from "path";
+var import_os = __toESM(require("os"), 1);
+var import_child_process = require("child_process");
+var import_fs = __toESM(require("fs"), 1);
+var import_path = __toESM(require("path"), 1);
 
 // node_modules/js-yaml/dist/js-yaml.mjs
 function isNothing(subject) {
@@ -6106,7 +6100,7 @@ var {
 } = import_index.default;
 
 // cli/index.ts
-import { fileURLToPath } from "url";
+var import_url = require("url");
 
 // shared/src/engine.ts
 var QUANT_VRAM_BYTES_PER_PARAM = {
@@ -6338,25 +6332,26 @@ function parseModelsFromYAML(data) {
 }
 
 // cli/index.ts
-var __filename = fileURLToPath(import.meta.url);
-var __dirname = path.dirname(__filename);
+var import_meta = {};
+var __filename = (0, import_url.fileURLToPath)(import_meta.url);
+var __dirname = import_path.default.dirname(__filename);
 function getGPUVRAM() {
   try {
-    if (os.platform() === "win32") {
-      const output = execSync("wmic path win32_VideoController get AdapterRAM /value").toString();
+    if (import_os.default.platform() === "win32") {
+      const output = (0, import_child_process.execSync)("wmic path win32_VideoController get AdapterRAM /value").toString();
       const ramMatch = output.match(/AdapterRAM=(\d+)/);
       if (ramMatch) {
         return parseInt(ramMatch[1]) / (1024 * 1024 * 1024);
       }
-    } else if (os.platform() === "darwin") {
-      const output = execSync("system_profiler SPDisplaysDataType").toString();
+    } else if (import_os.default.platform() === "darwin") {
+      const output = (0, import_child_process.execSync)("system_profiler SPDisplaysDataType").toString();
       const vramMatch = output.match(/VRAM \(Total\): (\d+) MB/);
       if (vramMatch) {
         return parseInt(vramMatch[1]) / 1024;
       }
     } else {
       try {
-        const output = execSync("nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits").toString();
+        const output = (0, import_child_process.execSync)("nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits").toString();
         return parseInt(output.trim()) / 1024;
       } catch (e) {
       }
@@ -6366,11 +6361,11 @@ function getGPUVRAM() {
   return 0;
 }
 function getHardwareSpecs() {
-  const totalMemoryGB = os.totalmem() / (1024 * 1024 * 1024);
-  const isAppleSilicon = os.platform() === "darwin" && os.arch() === "arm64";
+  const totalMemoryGB = import_os.default.totalmem() / (1024 * 1024 * 1024);
+  const isAppleSilicon = import_os.default.platform() === "darwin" && import_os.default.arch() === "arm64";
   const vramGB = getGPUVRAM();
-  const cpuCores = os.cpus().length;
-  const platform = os.platform();
+  const cpuCores = import_os.default.cpus().length;
+  const platform = import_os.default.platform();
   let mappedOS = "Linux";
   if (platform === "darwin") mappedOS = "macOS";
   if (platform === "win32") mappedOS = "Windows";
@@ -6382,7 +6377,7 @@ function getHardwareSpecs() {
     },
     cpu: {
       cores: cpuCores,
-      architecture: os.arch() === "arm64" ? "arm64" : "x86_64"
+      architecture: import_os.default.arch() === "arm64" ? "arm64" : "x86_64"
     },
     system_ram_gb: totalMemoryGB,
     os: mappedOS,
@@ -6390,8 +6385,8 @@ function getHardwareSpecs() {
   };
 }
 function loadModels() {
-  const modelsPath = path.join(__dirname, "../data/models.yaml");
-  const modelsFile = fs.readFileSync(modelsPath, "utf8");
+  const modelsPath = import_path.default.join(__dirname, "../data/models.yaml");
+  const modelsFile = import_fs.default.readFileSync(modelsPath, "utf8");
   const modelsData = jsYaml.load(modelsFile);
   return parseModelsFromYAML(modelsData);
 }
@@ -6475,7 +6470,7 @@ program.command("run <model>").description("Intelligently run a model, checking 
     });
     if (!response.ok) {
       console.log(`\x1B[36mOllamaFit:\x1B[0m Model '${modelName}' not found locally. Passing to Ollama...`);
-      spawnSync("ollama", ["run", modelName], { stdio: "inherit" });
+      (0, import_child_process.spawnSync)("ollama", ["run", modelName], { stdio: "inherit" });
       return;
     }
     const data = await response.json();
@@ -6498,9 +6493,9 @@ program.command("run <model>").description("Intelligently run a model, checking 
       console.log(`\x1B[32m\u2713 Hardware check passed for ${modelName}\x1B[0m
 `);
     }
-    spawnSync("ollama", ["run", modelName], { stdio: "inherit" });
+    (0, import_child_process.spawnSync)("ollama", ["run", modelName], { stdio: "inherit" });
   } catch (e) {
-    spawnSync("ollama", ["run", modelName], { stdio: "inherit" });
+    (0, import_child_process.spawnSync)("ollama", ["run", modelName], { stdio: "inherit" });
   }
 });
 program.command("install-alias").description('Install a shell alias to route "ollama" commands through ollama-fit').action(() => {
@@ -6512,12 +6507,12 @@ program.command("install-alias").description('Install a shell alias to route "ol
     console.log('Unsupported shell. Please manually add: alias ollama="ollama-fit proxy"');
     return;
   }
-  const rcPath = path.join(os.homedir(), rcFile);
+  const rcPath = import_path.default.join(import_os.default.homedir(), rcFile);
   const aliasCmd = `
 alias ollama="ollama-fit proxy"
 `;
   try {
-    fs.appendFileSync(rcPath, aliasCmd);
+    import_fs.default.appendFileSync(rcPath, aliasCmd);
     console.log(`\x1B[32mSuccessfully added alias to ${rcPath}\x1B[0m`);
     console.log("Please restart your terminal or run:");
     console.log(`source ~/${rcFile}`);
@@ -6527,15 +6522,15 @@ alias ollama="ollama-fit proxy"
 });
 program.command("proxy [args...]").description("Internal proxy command for the shell alias").action((args) => {
   if (!args || args.length === 0) {
-    spawnSync("ollama", [], { stdio: "inherit" });
+    (0, import_child_process.spawnSync)("ollama", [], { stdio: "inherit" });
     return;
   }
   const cmd = args[0];
   if (cmd === "run" && args[1]) {
     const modelName = args[1];
-    spawnSync(process.argv[0], [process.argv[1], "run", modelName], { stdio: "inherit" });
+    (0, import_child_process.spawnSync)(process.argv[0], [process.argv[1], "run", modelName], { stdio: "inherit" });
   } else {
-    spawnSync("ollama", args, { stdio: "inherit" });
+    (0, import_child_process.spawnSync)("ollama", args, { stdio: "inherit" });
   }
 });
 program.parse(process.argv);

@@ -1,3 +1,4 @@
+#!/usr/bin/env tsx
 import os from 'os';
 import { execSync, spawnSync } from 'child_process';
 import fs from 'fs';

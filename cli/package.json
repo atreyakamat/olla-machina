@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "OllamaFit CLI",
   "main": "dist/index.js",
+  "bin": {
+    "ollama-fit": "./index.ts"
+  },
   "type": "module",
   "scripts": {
     "start": "tsx index.ts",

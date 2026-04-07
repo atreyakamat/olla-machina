@@ -134,7 +134,7 @@ function App() {
         throw new Error('WebGPU not supported in this browser. Try Chrome or Edge.');
       }
 
-      const adapter = await navigator.gpu.requestAdapter();
+      const adapter = await (navigator as any).gpu.requestAdapter();
       if (!adapter) {
         throw new Error('No GPU adapter found.');
       }

@@ -39,19 +39,25 @@ This is a modern Node.js monorepo:
 ## 💻 Getting Started
 
 ### Prerequisites
-- **Node.js** (v18+)
+- **Go** (1.20+)
 - **Ollama** (Installed locally on your machine)
 
-### Installation
+### Installation (The Easy Way)
+The new Go-based CLI is a single binary with zero dependencies. No `npm install` required.
+
 ```bash
-# 1. Install dependencies across the entire monorepo
+# 1. Build the binary (one command, zero dependencies)
+go build -o ollama-fit cli/go/main.go
+
+# 2. Move it to your path (optional)
+sudo mv ollama-fit /usr/local/bin/
+```
+
+### 🌐 Running the Web App (Optional)
+If you prefer a visual interface, the React app still requires Node.js:
+```bash
 npm install
-
-# 2. Build the shared engine, CLI, and Web App
-npm run build
-
-# 3. Link the CLI tool globally
-npm link --workspace=cli
+npm run dev:web
 ```
 
 ---

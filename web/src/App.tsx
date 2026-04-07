@@ -130,7 +130,7 @@ function App() {
     setIsDetecting(true);
     setDetectionError(null);
     try {
-      if (!navigator.gpu) {
+      if (!(navigator as any).gpu) {
         throw new Error('WebGPU not supported in this browser. Try Chrome or Edge.');
       }
 
